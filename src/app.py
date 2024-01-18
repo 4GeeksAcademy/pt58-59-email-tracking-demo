@@ -2,6 +2,8 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import uuid
+
 from flask import Flask, Response, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -36,14 +38,11 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
-
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-
-    return jsonify(response_body), 200
+@app.route("/generatelink", methods=["GET"])
+def gen_tracking_link():
+    return jsonify(
+        link=f"""https://{request.headers.get("X-Forwarded-Host")}/tracking.png?id={uuid.uuid4()}"""
+    )
 
 
 @app.route("/tracking.png", methods=["GET"])

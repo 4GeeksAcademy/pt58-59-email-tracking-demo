@@ -52,10 +52,10 @@ def tracking_pixel():
     pixel = None
     with open("./src/1x1.png", "rb") as pix_file:
         pixel = pix_file.read()
-    user = TrackingData(
+    tracking_data = TrackingData(
         data=json.dumps(**request.args)
     )
-    db.session.add(user)
+    db.session.add(tracking_data)
     db.session.commit()
     return Response(
         pixel,

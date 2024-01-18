@@ -2,13 +2,14 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import json
 from flask import Flask, Response, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, TrackingData
 #from models import Person
 
 app = Flask(__name__)
@@ -51,7 +52,11 @@ def tracking_pixel():
     pixel = None
     with open("./src/1x1.png", "rb") as pix_file:
         pixel = pix_file.read()
-    print(request.query_string)
+    user = TrackingData(
+        data=json.dumps(**request.args)
+    )
+    db.session.add(user)
+    db.session.commit()
     return Response(
         pixel,
         mimetype="image/png"

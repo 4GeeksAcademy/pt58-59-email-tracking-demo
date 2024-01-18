@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for
+from flask import Flask, Response, request, jsonify, url_for
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS
@@ -44,6 +44,19 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+
+@app.route("/tracking.png", methods=["GET"])
+def tracking_pixel():
+    pixel = None
+    with open("./src/1x1.png", "rb") as pix_file:
+        pixel = pix_file.read()
+    print(request.query_string)
+    return Response(
+        pixel,
+        mimetype="image/png"
+    )
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
